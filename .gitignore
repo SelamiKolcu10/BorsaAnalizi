@@ -1,0 +1,13 @@
+# Sanal Ortam (Burası ÇOK ÖNEMLİ, yoksa 5000 dosya yükler)
+venv/
+
+# Python önbellek dosyaları
+__pycache__/
+*.pyc
+
+# Excel ve CSV raporları (Herkesin raporu kendine özel kalsın)
+*.xlsx
+*.csv
+
+# VS Code ayarları
+.vscode/
