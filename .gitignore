@@ -11,3 +11,5 @@ __pycache__/
 
 # VS Code ayarları
 .vscode/
+#                 .\venv\Scripts\activate
+#                  streamlit run dashboard.py
