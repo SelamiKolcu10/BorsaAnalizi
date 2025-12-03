@@ -49,13 +49,12 @@ def model_yukle():
     return pipeline("sentiment-analysis", model="ProsusAI/finbert")
 
 def sirket_bilgisi_getir(sembol):
-    """HATANIN DÜZELDİĞİ YER BURASI"""
     try:
         hisse = yf.Ticker(sembol)
         info = hisse.info
         return {
-            "İsim": info.get("longName", sembol),  # Bu satırı ekledik
-            "Sektör": info.get("sector", "Bilinmiyor"), # Bu satırı ekledik (Hata buradaydı)
+            "İsim": info.get("longName", sembol),
+            "Sektör": info.get("sector", "Bilinmiyor"),
             "Fiyat": info.get("currentPrice", 0),
             "Piyasa Değeri": info.get("marketCap", 0),
             "Özet": info.get("longBusinessSummary", "Bilgi yok.")
@@ -101,7 +100,14 @@ def grafik_ciz_rsi_ile(sembol, df, sma_goster=False):
         fig.add_hline(y=70, line_dash="dot", line_color="red", row=2, col=1)
         fig.add_hline(y=30, line_dash="dot", line_color="green", row=2, col=1)
 
-        fig.update_layout(height=500, xaxis_title="", showlegend=False, hovermode="x unified")
+        # --- BURASI DÜZELTİLDİ: dragmode='pan' ---
+        fig.update_layout(
+            height=500, 
+            xaxis_title="", 
+            showlegend=False, 
+            hovermode="x unified",
+            dragmode='pan'  # <--- ARTIK SÜRÜKLEYİNCE KAYACAK, ZOOM YAPMAYACAK
+        )
         return fig
     except: return None
 
@@ -187,14 +193,15 @@ if st.session_state.analiz_aktif:
                     st.divider()
 
                     fig = grafik_ciz_rsi_ile(sembol, df_fiyat, sma_aktif)
-                    if fig: st.plotly_chart(fig, use_container_width=True)
+                    if fig: 
+                        # scrollZoom=True ekledik ki tekerlekle zoom yapılabilsin
+                        st.plotly_chart(fig, use_container_width=True, config={'scrollZoom': True})
                 else:
                     st.warning("Fiyat verisi alınamadı.")
 
                 bilgi = sirket_bilgisi_getir(sembol)
                 if bilgi:
                     with st.expander("🏢 Şirket Kimlik Kartı"):
-                        # HATANIN DÜZELDİĞİ YER: ARTIK 'Sektör' ANAHTARI VAR
                         st.write(f"**Sektör:** {bilgi['Sektör']}")
                         st.write(f"**Özet:** {bilgi['Özet']}")
 
